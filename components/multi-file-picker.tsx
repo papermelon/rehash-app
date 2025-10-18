@@ -2,15 +2,12 @@
 
 import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
-import { Upload, FileText, ImageIcon, FileType, X, FileImage, ChevronLeft, ChevronRight } from "lucide-react"
+import { Upload, FileText, FileType, X, FileImage, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
-
-// Dynamic import for client-side only
-const heic2any = typeof window !== 'undefined' ? require('heic2any') : null
 
 export interface UploadedFile {
   id: string
@@ -41,10 +38,8 @@ export function MultiFilePicker({
   // Convert HEIC to JPEG for preview
   const convertHEICToJPEG = async (file: File): Promise<string> => {
     try {
-      if (!heic2any) {
-        console.warn('HEIC2any not available, using original file')
-        return URL.createObjectURL(file)
-      }
+      // Dynamically import heic2any for client-side only
+      const heic2any = (await import('heic2any')).default
 
       const convertedBlob = await heic2any({
         blob: file,
