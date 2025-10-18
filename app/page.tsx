@@ -41,12 +41,8 @@ export default async function HomePage() {
               Turn <span className="text-primary">forgotten notes</span> into <span className="text-primary">knowledge you remember</span>
             </h2>
 
-            <p className="text-pretty text-lg text-muted-foreground sm:text-xl max-w-3xl">
-              Stop letting your best insights gather digital dust. Rehash transforms your images, docs, and scattered thoughts into video essays, audio narrations, and interactive flashcards—so you actually revisit what matters.
-            </p>
-
-            <p className="text-base text-muted-foreground/80 italic max-w-2xl">
-              Your antidote to doomscrolling. Turn learning into a cycle, not a one-time event.
+            <p className="text-pretty text-lg text-muted-foreground sm:text-xl max-w-2xl">
+              Transform your scattered thoughts into video essays, flashcards, and audio you&apos;ll actually revisit.
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -149,7 +145,10 @@ export default async function HomePage() {
           <div className="mt-20 mb-8 text-center space-y-4">
             <h3 className="text-2xl font-bold">Stop collecting notes. Start remembering them.</h3>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Join learners who are turning forgotten notes into knowledge they actually use.
+              Join learners turning knowledge into a cycle, not a one-time event.
+            </p>
+            <p className="text-sm text-muted-foreground/80 italic">
+              Your antidote to doomscrolling.
             </p>
             {!user && (
               <Button asChild size="lg" className="gap-2 mt-4">
