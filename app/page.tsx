@@ -20,11 +20,12 @@ export default async function HomePage() {
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="relative w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7">
                 <Image
-                  src="/rehash-logo.png"
+                  src="/rehash-logo.png?v=2"
                   alt="REHASH Logo"
                   fill
                   className="object-contain"
                   priority
+                  unoptimized
                 />
               </div>
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
@@ -169,10 +170,11 @@ export default async function HomePage() {
             <div className="flex items-center gap-2">
               <div className="relative w-5 h-5">
                 <Image
-                  src="/rehash-logo.png"
+                  src="/rehash-logo.png?v=2"
                   alt="REHASH"
                   fill
                   className="object-contain"
+                  unoptimized
                 />
               </div>
               <p className="font-semibold">Rehash</p>
