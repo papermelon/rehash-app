@@ -1,0 +1,12 @@
+# Code Owners
+# This file defines who is automatically requested for review when a PR touches certain files
+
+# Default owners for everything in the repo
+* @YOUR_USERNAME
+
+# Specific owners for different areas (customize as needed)
+# /app/api/** @backend-team
+# /components/** @frontend-team
+# *.sql @database-team
+# *.md @docs-team
+

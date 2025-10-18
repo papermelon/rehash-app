@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint-and-type-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+    
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+    
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+    
+    - name: Run TypeScript type check
+      run: npx tsc --noEmit
+      continue-on-error: true
+    
+    - name: Run linter (if available)
+      run: pnpm run lint || echo "No lint script found"
+      continue-on-error: true
+    
+    - name: Check for console.logs
+      run: |
+        if grep -r "console\.log" app/ components/ lib/ --exclude-dir=node_modules; then
+          echo "⚠️ Warning: console.log statements found"
+        fi
+      continue-on-error: true
+
