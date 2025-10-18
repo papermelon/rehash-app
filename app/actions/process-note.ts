@@ -3,8 +3,9 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies, headers } from "next/headers"
 import type { NoteType } from "@/lib/types"
-// Using Interfaze AI for image and document analysis
-import { extractTextFromImageWithInterfaze as extractTextFromImage } from "@/lib/interfaze-client"
+// Using Interfaze AI for image and document analysis with OpenAI fallback
+import { extractTextFromImageWithInterfaze } from "@/lib/interfaze-client"
+import { extractTextFromImage as extractTextFromImageOpenAI } from "@/lib/openai-client"
 
 interface UploadedFileData {
   file: File
@@ -89,7 +90,15 @@ export async function processNote(input: ProcessNoteInput) {
         .from("note-uploads")
         .getPublicUrl(fileName)
 
-      const ocrText = await extractTextFromImage(publicUrl)
+      // Try Interfaze AI first, fallback to OpenAI if not available
+      let ocrText = await extractTextFromImageWithInterfaze(publicUrl)
+      
+      // If Interfaze AI returns empty (no API key or failed), try OpenAI Vision
+      if (!ocrText?.trim()) {
+        console.log("Interfaze AI failed or not configured, trying OpenAI Vision...")
+        ocrText = await extractTextFromImageOpenAI(publicUrl)
+      }
+      
       console.log("OCR extract", {
         file: fileData.file.name,
         hasText: Boolean(ocrText?.trim()),
