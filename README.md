@@ -51,10 +51,11 @@ Built by Ngawang Chime for Singapore Cursor Hackathon 2025
 - Node.js 18+ and pnpm
 - A Supabase account and project
 - API keys for:
-  - Google AI (Gemini)
-  - OpenAI
-  - ElevenLabs
-  - Fal.ai
+  - Google AI (Gemini) - for text generation
+  - OpenAI - for script generation and narration
+  - ElevenLabs - for voice synthesis
+  - Fal.ai - for image generation
+  - Interfaze AI (Optional) - for enhanced image/document OCR
 
 ## Setup Instructions
 
@@ -97,6 +98,9 @@ OPENAI_API_KEY=your_openai_api_key
 ELEVENLABS_API_KEY=your_elevenlabs_api_key
 FAL_AI_API_KEY=your_fal_ai_api_key
 TAVILY_API_KEY=your_tavily_api_key
+
+# Optional: Interfaze AI for enhanced image/document OCR
+INTERFAZE_API_KEY=your_interfaze_api_key
 ```
 
 **Where to find these values:**
@@ -106,6 +110,7 @@ TAVILY_API_KEY=your_tavily_api_key
 - OpenAI API key: [OpenAI Platform](https://platform.openai.com/api-keys)
 - ElevenLabs API key: [ElevenLabs](https://elevenlabs.io)
 - Fal.ai API key: [Fal.ai](https://fal.ai)
+- Interfaze AI API key: [Interfaze AI](https://interfaze.ai) (optional, for enhanced OCR)
 
 ### 4. Run Development Server
 
@@ -218,6 +223,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 - [Video Essay Setup](VIDEO_ESSAY_SETUP.md)
 - [Script Generation](SCRIPT_GENERATION_IMPLEMENTATION.md)
 - [Folders & Views](FOLDERS_AND_VIEWS.md)
+- [Interfaze AI Setup](INTERFAZE_AI_SETUP.md)
 - [Git Setup Guide](GIT_SETUP.md)
 - [Deployment Guide](DEPLOYMENT.md)
 

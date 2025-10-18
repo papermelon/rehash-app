@@ -3,7 +3,8 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies, headers } from "next/headers"
 import type { NoteType } from "@/lib/types"
-import { extractTextFromImage, extractTextFromImageBuffer } from "@/lib/openai-client"
+// Using Interfaze AI for image and document analysis
+import { extractTextFromImageWithInterfaze as extractTextFromImage } from "@/lib/interfaze-client"
 
 interface UploadedFileData {
   file: File
