@@ -54,7 +54,7 @@ export default async function HomePage() {
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="gap-2 transition-all hover:bg-primary hover:text-primary-foreground hover:scale-105 hover:shadow-lg">
+                  <Button asChild size="lg" variant="outline" className="gap-2 transition-all hover:scale-105 hover:shadow-lg">
                     <Link href="/vault">
                       <FolderOpen className="h-4 w-4" />
                       Go to Vault
@@ -69,7 +69,7 @@ export default async function HomePage() {
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="transition-all hover:bg-primary hover:text-primary-foreground hover:scale-105 hover:shadow-lg">
+                  <Button asChild size="lg" variant="outline" className="transition-all hover:scale-105 hover:shadow-lg">
                     <Link href="/login">Sign in</Link>
                   </Button>
                 </>
