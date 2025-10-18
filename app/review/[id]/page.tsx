@@ -186,7 +186,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 )}
                 {note.file_size && (
                   <p className="text-sm">
-                    <strong>Size:</strong> {(note.file_size / 1024 / 1024).toFixed(1)} MB
+                    <strong>Size:</strong> {((note.file_size || 0) / 1024 / 1024).toFixed(1)} MB
                   </p>
                 )}
               </div>

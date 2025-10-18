@@ -17,7 +17,15 @@ export function MarkdownNotes({ notesMd, title = "Study Notes" }: MarkdownNotesP
   const [copied, setCopied] = useState(false)
 
   // Convert markdown to HTML
-  const htmlContent = remark().use(remarkHtml as any).processSync(notesMd).toString()
+  const htmlContent = notesMd ? 
+    (() => {
+      try {
+        return remark().use(remarkHtml as any).processSync(notesMd).toString()
+      } catch (error) {
+        console.error('Markdown processing error:', error)
+        return notesMd // Fallback to raw markdown
+      }
+    })() : ''
 
   const handleCopy = async () => {
     try {
