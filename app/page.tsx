@@ -48,13 +48,13 @@ export default async function HomePage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               {user ? (
                 <>
-                  <Button asChild size="lg" className="gap-2">
+                  <Button asChild size="lg" className="gap-2 transition-all hover:scale-105 hover:shadow-lg">
                     <Link href="/upload">
                       Create New Rehash
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="gap-2">
+                  <Button asChild size="lg" variant="outline" className="gap-2 transition-all hover:bg-primary hover:text-primary-foreground hover:scale-105 hover:shadow-lg">
                     <Link href="/vault">
                       <FolderOpen className="h-4 w-4" />
                       Go to Vault
@@ -63,13 +63,13 @@ export default async function HomePage() {
                 </>
               ) : (
                 <>
-                  <Button asChild size="lg" className="gap-2">
+                  <Button asChild size="lg" className="gap-2 transition-all hover:scale-105 hover:shadow-lg">
                     <Link href="/signup">
                       Get Started
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline">
+                  <Button asChild size="lg" variant="outline" className="transition-all hover:bg-primary hover:text-primary-foreground hover:scale-105 hover:shadow-lg">
                     <Link href="/login">Sign in</Link>
                   </Button>
                 </>
@@ -151,7 +151,7 @@ export default async function HomePage() {
               Your antidote to doomscrolling.
             </p>
             {!user && (
-              <Button asChild size="lg" className="gap-2 mt-4">
+              <Button asChild size="lg" className="gap-2 mt-4 transition-all hover:scale-105 hover:shadow-lg">
                 <Link href="/signup">
                   Try Rehash Free
                   <ArrowRight className="h-4 w-4" />
