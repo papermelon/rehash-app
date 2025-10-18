@@ -4,9 +4,13 @@
 > Rehash helps you revisit and transform what you already know into engaging video essays, so learning becomes cyclical instead of disposable.
 
 ## 🚀 Overview
-Rehash is an AI-powered app that turns your existing notes into comic-style video essays — inspired by creators like **Kurzgesagt**, **Casually Explained**, **CGP Grey**, and **The School of Life**.
+"People need to be reminded, not taught". Some of the best learning comes from knowledge we have already encountered. 
 
-Users can upload text or images, generate rewritten scripts, and convert them into stylized explainers with narration and visuals.
+Rehash is an AI-powered app that makes it easy to transform your existing notes into content that you can revisit in different forms, so you can focus on relearning what is important to you. 
+
+Rehash aims to be your antidote to doomscrolling.
+
+Users can upload text or images, generate rewritten scripts, and convert them into stylized explainers with narration and visuals, or in familiar or engaging formats such as comment conversation threads or MCQ quizzes respectively.
 
 ## ⚙️ Tech Stack
 - **Next.js 15 (App Router)**
