@@ -1,49 +1,34 @@
-import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
-export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
+// Vercel middleware must be extremely fast (sub-second). Avoid any network calls here.
+
+// Supabase sets cookies shaped like sb-<project-ref>-auth-token; presence is enough for routing decisions.
+function hasSupabaseAuthCookie(request: NextRequest) {
+  return request.cookies
+    .getAll()
+    .some(cookie => cookie.name.includes('-auth-token'))
+}
+
+export function middleware(request: NextRequest) {
+  const supabaseResponse = NextResponse.next({
     request,
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
-        },
-      },
-    },
-  )
-
-  // Refresh session if expired
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Protect routes that require authentication
+  // Lightweight route protection/redirects based on cookie presence only.
   const protectedRoutes = ["/vault", "/upload", "/review", "/play", "/audio"]
   const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))
-  
-  if (!user && isProtectedRoute) {
+  const isAuthRoute = request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup"
+  const hasAuth = hasSupabaseAuthCookie(request)
+
+  if (!hasAuth && isProtectedRoute) {
     const url = request.nextUrl.clone()
-    // Redirect to signup for better onboarding (users can still navigate to login)
     url.pathname = "/signup"
     url.searchParams.set("redirect", request.nextUrl.pathname)
     return NextResponse.redirect(url)
   }
 
   // Redirect authenticated users away from auth pages
-  if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup")) {
+  if (hasAuth && isAuthRoute) {
     const url = request.nextUrl.clone()
     url.pathname = "/vault"
     return NextResponse.redirect(url)
