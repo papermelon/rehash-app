@@ -1,11 +1,10 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { FileText, ImageIcon, FileType, Folder as FolderIcon } from "lucide-react"
+import { FileText, ImageIcon, FileType } from "lucide-react"
 import type { Note, ViewMode, Folder } from "@/lib/types"
 import { formatDistanceToNow } from "date-fns"
 import { NoteActions } from "@/components/note-actions"
-import { cn } from "@/lib/utils"
 
 interface NoteCardProps {
   note: Note

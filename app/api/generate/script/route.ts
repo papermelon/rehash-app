@@ -4,6 +4,7 @@ import { generateScript } from '@/lib/openai-client'
 import { supplementContent } from '@/lib/web-search'
 import { getStyleTemplate } from '@/lib/script-styles'
 import type { ScriptStyle, ScriptGenerationResponse } from '@/lib/types'
+import { getErrorMessage } from '@/lib/error-utils'
 
 // Increase timeout for this route to handle long script generation + segments
 export const maxDuration = 300 // 5 minutes
@@ -213,12 +214,11 @@ Respond with ONLY the image prompt, nothing else. Be specific about composition,
     }
 
     return NextResponse.json(response)
-  } catch (error: any) {
+  } catch (error) {
     console.error('Script generation error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to generate script' },
+      { error: getErrorMessage(error, 'Failed to generate script') },
       { status: 500 }
     )
   }
 }
-

@@ -6,6 +6,7 @@ import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { getSupabaseBrowserClient } from "@/lib/supabase/client"
+import { getErrorMessage } from "@/lib/error-utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -27,7 +28,7 @@ function LoginForm() {
     setLoading(true)
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
@@ -38,8 +39,8 @@ function LoginForm() {
       const redirectTo = searchParams.get("redirect") || "/vault"
       router.push(redirectTo)
       router.refresh()
-    } catch (err: any) {
-      setError(err.message || "Failed to sign in")
+    } catch (err) {
+      setError(getErrorMessage(err, "Failed to sign in"))
     } finally {
       setLoading(false)
     }
@@ -89,7 +90,7 @@ function LoginForm() {
               {loading ? "Signing in..." : "Sign in"}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/signup" className="font-medium text-primary hover:underline">
                 Sign up
               </Link>

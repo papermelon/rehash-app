@@ -20,10 +20,10 @@ interface RedditThreadProps {
 
 export function RedditThread({ redditJson, title = "Discussion Thread" }: RedditThreadProps) {
   const [copied, setCopied] = useState(false)
-  const [expandedComments, setExpandedComments] = useState<Set<number>>(new Set([0, 1, 2, 3, 4, 5]))
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set(["0", "1", "2", "3", "4", "5"]))
   const [votedComments, setVotedComments] = useState<Map<string, 'up' | 'down' | null>>(new Map())
 
-  const toggleComment = (index: number) => {
+  const toggleComment = (index: string) => {
     const newExpanded = new Set(expandedComments)
     if (newExpanded.has(index)) {
       newExpanded.delete(index)
@@ -62,7 +62,7 @@ export function RedditThread({ redditJson, title = "Discussion Thread" }: Reddit
     markdown += `**Posted by:** ${redditJson.op}\n\n`
     markdown += `---\n\n`
 
-    redditJson.comments.forEach((comment, index) => {
+    redditJson.comments.forEach((comment) => {
       markdown += `## ${comment.user} (${formatUpvotes(comment.up)} upvotes)\n\n`
       markdown += `${comment.body}\n\n`
       
@@ -85,7 +85,7 @@ export function RedditThread({ redditJson, title = "Discussion Thread" }: Reddit
       setCopied(true)
       toast.success("Thread copied to clipboard!")
       setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
+    } catch {
       toast.error("Failed to copy thread")
     }
   }
@@ -103,7 +103,7 @@ export function RedditThread({ redditJson, title = "Discussion Thread" }: Reddit
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
       toast.success("Thread downloaded!")
-    } catch (error) {
+    } catch {
       toast.error("Failed to download thread")
     }
   }
@@ -132,7 +132,7 @@ export function RedditThread({ redditJson, title = "Discussion Thread" }: Reddit
     )
   }
 
-  const CommentComponent = ({ comment, index, isReply = false }: { comment: Comment; index: number; isReply?: boolean }) => {
+  const CommentComponent = ({ comment, index, isReply = false }: { comment: Comment; index: string; isReply?: boolean }) => {
     const commentId = `${index}-${comment.user}`
     const vote = votedComments.get(commentId)
     
@@ -205,7 +205,7 @@ export function RedditThread({ redditJson, title = "Discussion Thread" }: Reddit
                     <CommentComponent
                       key={replyIndex}
                       comment={reply}
-                      index={`${index}-${replyIndex}` as any}
+                      index={`${index}-${replyIndex}`}
                       isReply={true}
                     />
                   ))}
@@ -377,7 +377,7 @@ export function RedditThread({ redditJson, title = "Discussion Thread" }: Reddit
           {/* Comments list */}
           <div className="space-y-4">
             {redditJson.comments.map((comment, index) => (
-              <CommentComponent key={index} comment={comment} index={index} />
+              <CommentComponent key={index} comment={comment} index={String(index)} />
             ))}
           </div>
         </CardContent>

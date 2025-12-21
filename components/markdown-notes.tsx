@@ -20,7 +20,7 @@ export function MarkdownNotes({ notesMd, title = "Study Notes" }: MarkdownNotesP
   const htmlContent = notesMd ? 
     (() => {
       try {
-        return remark().use(remarkHtml as any).processSync(notesMd).toString()
+        return remark().use(remarkHtml).processSync(notesMd).toString()
       } catch (error) {
         console.error('Markdown processing error:', error)
         return notesMd // Fallback to raw markdown
@@ -33,7 +33,7 @@ export function MarkdownNotes({ notesMd, title = "Study Notes" }: MarkdownNotesP
       setCopied(true)
       toast.success("Notes copied to clipboard!")
       setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
+    } catch {
       toast.error("Failed to copy notes")
     }
   }
@@ -50,7 +50,7 @@ export function MarkdownNotes({ notesMd, title = "Study Notes" }: MarkdownNotesP
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
       toast.success("Notes downloaded!")
-    } catch (error) {
+    } catch {
       toast.error("Failed to download notes")
     }
   }

@@ -10,7 +10,6 @@ import { FlashcardView } from "@/components/flashcard-view"
 import Link from "next/link"
 import { ArrowLeft, Calendar, FileText, MessageCircle, HelpCircle, Mic } from "lucide-react"
 import { format } from "date-fns"
-import type { Note } from "@/lib/types"
 
 interface ReviewPageProps {
   params: Promise<{ id: string }>

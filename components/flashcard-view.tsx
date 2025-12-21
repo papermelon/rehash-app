@@ -27,7 +27,7 @@ export function FlashcardView({ cardsJson, title = "Flashcards" }: FlashcardView
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <HelpCircle className="h-5 w-5" />
-            Flashcards
+            {title}
           </CardTitle>
           <CardDescription>
             Interactive flashcards will appear here after generation
@@ -112,7 +112,7 @@ export function FlashcardView({ cardsJson, title = "Flashcards" }: FlashcardView
           <div>
             <CardTitle className="flex items-center gap-2">
               <HelpCircle className="h-5 w-5" />
-              Flashcards
+              {title}
             </CardTitle>
             <CardDescription>
               Interactive study cards with flip animations
@@ -207,7 +207,6 @@ export function FlashcardView({ cardsJson, title = "Flashcards" }: FlashcardView
               <h4 className="font-medium text-center">Choose your answer:</h4>
               <div className="grid grid-cols-2 gap-3">
                 {currentCard.choices.map((choice, idx) => {
-                  const isCorrect = choice === currentCard.answer
                   const isSelected = showAnswer && choice === currentCard.answer
                   const isWrong = showAnswer && answeredCards.has(currentIndex) && choice !== currentCard.answer
                   

@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { MultiFilePicker, UploadedFile } from "@/components/multi-file-picker"
 import { RehashMeter } from "@/components/rehash-meter"
 import { AppNav } from "@/components/app-nav"
@@ -13,8 +12,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { processNote } from "@/app/actions/process-note"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { FileText, ImageIcon, FileType, Sparkles, FolderOpen, Upload as UploadIcon } from "lucide-react"
+import { FileText, ImageIcon, FileType, Sparkles, Upload as UploadIcon } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getErrorMessage } from "@/lib/error-utils"
 
 type ProcessingStage = "uploading" | "extracting" | "consolidating" | "generating-notes" | "generating-reddit" | "generating-cards" | "complete" | null
 
@@ -82,8 +82,8 @@ export default function UploadPage() {
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       router.push(`/review/${result.noteId}`)
-    } catch (err: any) {
-      setError(err.message || "Failed to process files")
+    } catch (err) {
+      setError(getErrorMessage(err, "Failed to process files"))
       setProcessing(false)
       setStage(null)
     }

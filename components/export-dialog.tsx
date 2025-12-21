@@ -48,7 +48,7 @@ export function ExportDialog({ noteId, open, onOpenChange }: ExportDialogProps) 
       URL.revokeObjectURL(url)
 
       onOpenChange(false)
-    } catch (error) {
+    } catch {
       alert("Failed to export")
     } finally {
       setExporting(false)

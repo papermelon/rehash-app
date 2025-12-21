@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Card } from "@/components/ui/card"
-import { Loader2, AlertTriangle, CheckCircle2 } from "lucide-react"
+import { Loader2, AlertTriangle } from "lucide-react"
 import { getAllStyles, type ScriptStyle } from "@/lib/script-styles"
 import type { ScriptGenerationResponse } from "@/lib/types"
+import { getErrorMessage } from "@/lib/error-utils"
 
 interface ScriptGeneratorProps {
   noteId: string
@@ -58,8 +59,8 @@ export function ScriptGenerator({
 
       const data: ScriptGenerationResponse = await response.json()
       onScriptGenerated(data)
-    } catch (err: any) {
-      setError(err.message || 'Failed to generate script')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to generate script'))
     } finally {
       setIsGenerating(false)
     }
@@ -89,7 +90,7 @@ export function ScriptGenerator({
                     {style.description}
                   </p>
                   <p className="text-xs italic text-muted-foreground mt-2">
-                    "{style.example.substring(0, 100)}..."
+                    &quot;{style.example.substring(0, 100)}...&quot;
                   </p>
                 </div>
               </div>
@@ -125,7 +126,7 @@ export function ScriptGenerator({
       <Alert>
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
-          If your notes don't have enough content for the selected duration, we'll
+          If your notes don&apos;t have enough content for the selected duration, we&apos;ll
           supplement it with additional information from web sources.
         </AlertDescription>
       </Alert>
@@ -164,4 +165,3 @@ export function ScriptGenerator({
     </div>
   )
 }
-

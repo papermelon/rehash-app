@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Save, X, FileText, AlertTriangle, CheckCircle2 } from "lucide-react"
+import { getErrorMessage } from "@/lib/error-utils"
 
 interface ScriptEditorProps {
   noteId: string
@@ -59,8 +60,8 @@ export function ScriptEditor({ noteId, initialScript, onScriptSaved }: ScriptEdi
       
       // Clear success message after 3 seconds
       setTimeout(() => setSaveSuccess(false), 3000)
-    } catch (err: any) {
-      setSaveError(err.message || 'Failed to save script')
+    } catch (err) {
+      setSaveError(getErrorMessage(err, 'Failed to save script'))
     } finally {
       setIsSaving(false)
     }
@@ -145,4 +146,3 @@ export function ScriptEditor({ noteId, initialScript, onScriptSaved }: ScriptEdi
     </div>
   )
 }
-

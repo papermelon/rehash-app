@@ -3,11 +3,13 @@
 import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { Upload, FileText, FileType, X, FileImage, ChevronLeft, ChevronRight } from "lucide-react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
+import { getErrorMessage } from "@/lib/error-utils"
 
 export interface UploadedFile {
   id: string
@@ -36,7 +38,7 @@ export function MultiFilePicker({
   const [currentIndex, setCurrentIndex] = useState(0)
 
   // Convert HEIC to JPEG for preview
-  const convertHEICToJPEG = async (file: File): Promise<string> => {
+  const convertHEICToJPEG = useCallback(async (file: File): Promise<string> => {
     try {
       // Dynamically import heic2any for client-side only
       const heic2any = (await import('heic2any')).default
@@ -53,18 +55,18 @@ export function MultiFilePicker({
       // Fallback to original file URL
       return URL.createObjectURL(file)
     }
-  }
+  }, [])
 
   // Create preview URL for image files
-  const createPreviewURL = async (file: File): Promise<string> => {
+  const createPreviewURL = useCallback(async (file: File): Promise<string> => {
     if (file.type === 'image/heic' || file.type === 'image/heif') {
       return await convertHEICToJPEG(file)
     }
     return URL.createObjectURL(file)
-  }
+  }, [convertHEICToJPEG])
 
   // Validate file
-  const validateFile = (file: File): { valid: boolean; error?: string } => {
+  const validateFile = useCallback((file: File): { valid: boolean; error?: string } => {
     const maxSizeBytes = maxFileSize * 1024 * 1024
 
     if (file.size > maxSizeBytes) {
@@ -82,7 +84,7 @@ export function MultiFilePicker({
     }
 
     return { valid: true }
-  }
+  }, [maxFileSize])
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setError(null)
@@ -139,12 +141,12 @@ export function MultiFilePicker({
       const updatedFiles = [...files, ...newFiles]
       setFiles(updatedFiles)
       onFilesChange(updatedFiles)
-    } catch (err: any) {
-      setError(err.message || 'Failed to process files')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to process files'))
     } finally {
       setConverting(false)
     }
-  }, [files, maxImages, onFilesChange])
+  }, [createPreviewURL, files, maxImages, onFilesChange, validateFile])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -280,11 +282,16 @@ export function MultiFilePicker({
                   {/* Image Preview */}
                   {currentFile.file.type.startsWith('image/') && (
                     <div className="relative">
-                      <img
-                        src={currentFile.preview}
-                        alt={currentFile.file.name}
-                        className="w-full h-[400px] object-contain rounded border bg-muted"
-                      />
+                      <div className="relative h-[400px] w-full rounded border bg-muted">
+                        <Image
+                          src={currentFile.preview}
+                          alt={currentFile.file.name}
+                          fill
+                          className="object-contain"
+                          sizes="(min-width: 1024px) 50vw, 100vw"
+                          unoptimized
+                        />
+                      </div>
                     </div>
                   )}
 
@@ -355,11 +362,16 @@ export function MultiFilePicker({
                       )}
                     >
                       {file.file.type.startsWith('image/') ? (
-                        <img
-                          src={file.preview}
-                          alt={file.file.name}
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={file.preview}
+                            alt={file.file.name}
+                            fill
+                            className="object-cover"
+                            sizes="64px"
+                            unoptimized
+                          />
+                        </div>
                       ) : file.file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? (
                         <div className="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600">
                           <FileType className="h-6 w-6" />

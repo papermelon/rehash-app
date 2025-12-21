@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getErrorMessage } from '@/lib/error-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,12 +60,11 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ folder })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Create folder error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to create folder' },
+      { error: getErrorMessage(error, 'Failed to create folder') },
       { status: 500 }
     )
   }
 }
-

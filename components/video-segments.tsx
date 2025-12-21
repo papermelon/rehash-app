@@ -6,8 +6,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Card } from "@/components/ui/card"
-import { Image as ImageIcon, Sparkles, Trash2, Plus, AlertTriangle, Loader2 } from "lucide-react"
+import { Image as ImageIcon, Sparkles, Trash2, AlertTriangle, Loader2 } from "lucide-react"
+import Image from "next/image"
 import type { ScriptSegment } from "@/lib/types"
+import { getErrorMessage } from "@/lib/error-utils"
 import {
   Collapsible,
   CollapsibleContent,
@@ -79,10 +81,10 @@ export function VideoSegments({ noteId, segments, onSegmentsUpdate }: VideoSegme
       })
 
       onSegmentsUpdate()
-    } catch (err: any) {
+    } catch (err) {
       setErrors(prev => ({
         ...prev,
-        [segment.id]: err.message || 'Failed to generate image'
+        [segment.id]: getErrorMessage(err, 'Failed to generate image')
       }))
     } finally {
       setGeneratingSegments(prev => {
@@ -111,8 +113,8 @@ export function VideoSegments({ noteId, segments, onSegmentsUpdate }: VideoSegme
       }
 
       onSegmentsUpdate()
-    } catch (err: any) {
-      console.error('Failed to remove segment:', err)
+    } catch (err) {
+      console.error('Failed to remove segment:', getErrorMessage(err, 'Failed to remove segment'))
     }
   }
 
@@ -133,15 +135,14 @@ export function VideoSegments({ noteId, segments, onSegmentsUpdate }: VideoSegme
       }
 
       onSegmentsUpdate()
-    } catch (err: any) {
-      console.error('Failed to generate segments:', err)
-      alert(err.message || 'Failed to generate segments')
+    } catch (err) {
+      const message = getErrorMessage(err, 'Failed to generate segments')
+      console.error('Failed to generate segments:', message)
+      alert(message)
     } finally {
       setIsGeneratingAllSegments(false)
     }
   }
-
-  const totalCost = segments.reduce((sum, seg) => sum + (seg.cost || 0), 0)
 
   if (segments.length === 0) {
     return (
@@ -207,11 +208,13 @@ export function VideoSegments({ noteId, segments, onSegmentsUpdate }: VideoSegme
                       }`}
                     />
                     {!expandedSegments.has(segment.id) && segment.imageUrl && (
-                      <div className="flex-shrink-0 w-20 h-12 rounded overflow-hidden bg-muted">
-                        <img
+                      <div className="relative flex-shrink-0 w-20 h-12 rounded overflow-hidden bg-muted">
+                        <Image
                           src={segment.imageUrl}
                           alt={`Segment ${segment.order + 1} thumbnail`}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
+                          sizes="80px"
                         />
                       </div>
                     )}
@@ -277,10 +280,12 @@ export function VideoSegments({ noteId, segments, onSegmentsUpdate }: VideoSegme
                       <div>
                         <label className="text-xs font-medium text-muted-foreground">Generated Image</label>
                         <div className="mt-1 relative aspect-video rounded-md overflow-hidden bg-muted">
-                          <img
+                          <Image
                             src={segment.imageUrl}
                             alt={`Segment ${segment.order + 1}`}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
+                            sizes="(min-width: 1024px) 640px, 100vw"
                           />
                         </div>
                         {segment.model && (
@@ -354,4 +359,3 @@ export function VideoSegments({ noteId, segments, onSegmentsUpdate }: VideoSegme
     </div>
   )
 }
-

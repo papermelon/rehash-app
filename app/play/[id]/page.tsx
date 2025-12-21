@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { InvaderGame } from "@/components/invader-game"
 import Link from "next/link"
 import { ArrowLeft, Gamepad2 } from "lucide-react"
-import type { Note } from "@/lib/types"
 
 interface PlayPageProps {
   params: Promise<{ id: string }>
@@ -61,7 +60,7 @@ export default async function PlayPage({ params }: PlayPageProps) {
               <Gamepad2 className="h-16 w-16 mx-auto text-muted-foreground" />
               <h2 className="text-2xl font-bold">No Game Cards Available</h2>
               <p className="text-muted-foreground">
-                This note doesn't have any game cards generated yet.
+                This note doesn&apos;t have any game cards generated yet.
               </p>
               <Button asChild>
                 <Link href={`/review/${note.id}`}>

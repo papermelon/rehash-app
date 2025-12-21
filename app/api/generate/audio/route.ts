@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getErrorMessage } from '@/lib/error-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -114,7 +115,7 @@ export async function POST(request: NextRequest) {
     // Upload to Supabase Storage
     const fileName = `${user.id}/${noteId}_${Date.now()}.mp3`
     
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('note-uploads')
       .upload(fileName, audioBlob, {
         contentType: 'audio/mpeg',
@@ -157,12 +158,11 @@ export async function POST(request: NextRequest) {
       audioUrl: publicUrl,
       message: 'Audio generated successfully',
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Audio generation error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to generate audio' },
+      { error: getErrorMessage(error, 'Failed to generate audio') },
       { status: 500 }
     )
   }
 }
-

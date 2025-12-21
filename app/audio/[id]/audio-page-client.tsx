@@ -9,15 +9,15 @@ import { VideoEssayControls } from "@/components/video-essay-controls"
 import { VideoSegments } from "@/components/video-segments"
 import { Download, Volume2, Mic, AlertTriangle, CheckCircle2 } from "lucide-react"
 import type { Note, ScriptGenerationResponse, ScriptStyle } from "@/lib/types"
+import { getErrorMessage } from "@/lib/error-utils"
 
 interface AudioPageClientProps {
   note: Note
   hasAudio: boolean
   hasScript: boolean
-  hasNotes: boolean
 }
 
-export function AudioPageClient({ note, hasAudio, hasScript, hasNotes }: AudioPageClientProps) {
+export function AudioPageClient({ note, hasAudio, hasScript }: AudioPageClientProps) {
   const [generationResponse, setGenerationResponse] = useState<ScriptGenerationResponse | null>(null)
   const [isGeneratingAudio, setIsGeneratingAudio] = useState(false)
   const [audioError, setAudioError] = useState<string | null>(null)
@@ -29,7 +29,7 @@ export function AudioPageClient({ note, hasAudio, hasScript, hasNotes }: AudioPa
     window.location.reload()
   }
 
-  const handleScriptSaved = (updatedScript: string) => {
+  const handleScriptSaved = (_updatedScript: string) => {
     // Script saved successfully, no need to reload
     console.log('Script saved')
   }
@@ -57,8 +57,8 @@ export function AudioPageClient({ note, hasAudio, hasScript, hasNotes }: AudioPa
 
       const data: ScriptGenerationResponse = await response.json()
       handleScriptGenerated(data)
-    } catch (err: any) {
-      console.error('Failed to regenerate script:', err)
+    } catch (err) {
+      console.error('Failed to regenerate script:', getErrorMessage(err, 'Failed to regenerate script'))
     } finally {
       setIsRegeneratingScript(false)
     }
@@ -91,8 +91,8 @@ export function AudioPageClient({ note, hasAudio, hasScript, hasNotes }: AudioPa
 
       // Reload the page to show the new audio
       window.location.reload()
-    } catch (err: any) {
-      setAudioError(err.message || 'Failed to generate audio')
+    } catch (err) {
+      setAudioError(getErrorMessage(err, 'Failed to generate audio'))
     } finally {
       setIsGeneratingAudio(false)
     }
@@ -251,4 +251,3 @@ export function AudioPageClient({ note, hasAudio, hasScript, hasNotes }: AudioPa
     </div>
   )
 }
-

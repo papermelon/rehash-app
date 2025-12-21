@@ -1,6 +1,7 @@
 "use server"
 
 import { getSupabaseServerClient } from "@/lib/supabase/server"
+import { getErrorMessage } from "@/lib/error-utils"
 import { revalidatePath } from "next/cache"
 
 export async function deleteNote(noteId: string) {
@@ -25,8 +26,8 @@ export async function deleteNote(noteId: string) {
 
     revalidatePath("/vault")
     return { success: true }
-  } catch (error: any) {
+  } catch (error) {
     console.error("[v0] Delete note error:", error)
-    return { error: error.message || "Failed to delete note" }
+    return { error: getErrorMessage(error, "Failed to delete note") }
   }
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getErrorMessage } from '@/lib/error-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,12 +53,11 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Script update error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to update script' },
+      { error: getErrorMessage(error, 'Failed to update script') },
       { status: 500 }
     )
   }
 }
-

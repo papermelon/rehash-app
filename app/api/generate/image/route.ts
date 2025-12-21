@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import type { ScriptSegment } from '@/lib/types'
+import { getErrorMessage } from '@/lib/error-utils'
 
 const FAL_AI_API_KEY = process.env.FAL_AI_API_KEY
 
@@ -130,10 +131,11 @@ export async function POST(request: NextRequest) {
           throw new Error('No image URL in response')
         }
       }
-    } catch (error: any) {
-      console.error('Image generation failed:', error)
+    } catch (error) {
+      const message = getErrorMessage(error, 'Failed to generate image with fal.ai')
+      console.error('Image generation failed:', message)
       return NextResponse.json(
-        { error: 'Failed to generate image: ' + error.message },
+        { error: `Failed to generate image: ${message}` },
         { status: 500 }
       )
     }
@@ -145,7 +147,7 @@ export async function POST(request: NextRequest) {
 
     const fileName = `${user.id}/${noteId}_${segmentId}_${Date.now()}.png`
     
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('note-uploads')
       .upload(fileName, imageBlob, {
         contentType: 'image/png',
@@ -207,12 +209,11 @@ export async function POST(request: NextRequest) {
       cost,
       model,
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Image generation error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to generate image' },
+      { error: getErrorMessage(error, 'Failed to generate image') },
       { status: 500 }
     )
   }
 }
-

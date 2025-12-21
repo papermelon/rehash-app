@@ -1,4 +1,5 @@
 import OpenAI from 'openai'
+import { getErrorMessage } from '@/lib/error-utils'
 
 // Initialize OpenAI client
 export const openai = new OpenAI({
@@ -50,29 +51,33 @@ export async function callOpenAI<T>(
     if (options?.response_format?.type === 'json_object') {
       try {
         return JSON.parse(content) as T
-      } catch (parseError) {
+      } catch {
         console.error('Failed to parse JSON response:', content)
         throw new Error('Invalid JSON response from OpenAI')
       }
     }
 
     return content as T
-  } catch (error: any) {
+  } catch (error) {
     console.error('OpenAI API error:', error)
-    
-    if (error.status === 429) {
+
+    const status = (typeof error === 'object' && error !== null && 'status' in error)
+      ? (error as { status?: number }).status
+      : undefined
+
+    if (status === 429) {
       throw new Error('Rate limit exceeded. Please try again in a moment.')
     }
     
-    if (error.status === 401) {
+    if (status === 401) {
       throw new Error('Invalid API key. Please check your OpenAI configuration.')
     }
     
-    if (error.status === 500) {
+    if (status === 500) {
       throw new Error('OpenAI service temporarily unavailable. Please try again.')
     }
     
-    throw new Error(error.message || 'Failed to generate content')
+    throw new Error(getErrorMessage(error, 'Failed to generate content'))
   }
 }
 
@@ -198,8 +203,8 @@ Your script should be ready to be read aloud and converted to audio.`
     })
 
     return script
-  } catch (error: any) {
+  } catch (error) {
     console.error('Script generation error:', error)
-    throw new Error(error.message || 'Failed to generate script')
+    throw new Error(getErrorMessage(error, 'Failed to generate script'))
   }
 }

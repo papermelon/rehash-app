@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getErrorMessage } from '@/lib/error-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const updates: any = {
+    const updates: { updated_at: string; name?: string; color?: string; icon?: string } = {
       updated_at: new Date().toISOString(),
     }
 
@@ -50,12 +51,11 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Update folder error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to update folder' },
+      { error: getErrorMessage(error, 'Failed to update folder') },
       { status: 500 }
     )
   }
 }
-

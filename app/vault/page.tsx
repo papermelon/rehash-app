@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { getServerSupabase } from "@/lib/supabase/server"
 import { AppNav } from "@/components/app-nav"
 import { VaultClient } from "./vault-client"
-import type { Note, Folder, ViewMode } from "@/lib/types"
+import type { Folder, ViewMode } from "@/lib/types"
 
 interface VaultPageProps {
   searchParams: Promise<{ filter?: string }>
@@ -21,7 +21,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
   }
 
   // Fetch user's notes
-  const { data: allNotes, error } = await supabase
+  const { data: allNotes } = await supabase
     .from("notes")
     .select("*")
     .eq("user_id", user.id)

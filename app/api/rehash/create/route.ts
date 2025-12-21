@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server';
 import { getServerSupabase } from '@/lib/supabase/server';
+import { getErrorMessage } from '@/lib/error-utils';
+
+type RehashFileInput = {
+  url: string
+  note?: string
+  filename?: string
+  file_size?: number | null
+}
 
 export async function POST(req: Request) {
   try {
     const supabase = await getServerSupabase();
 
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'Not signed in' }, { status: 401 });
     }
@@ -37,8 +45,8 @@ export async function POST(req: Request) {
     }
 
     // Insert photos if we have files
-    if (files && files.length > 0) {
-      const photosToInsert = files.map((file: any, idx: number) => ({
+    if (Array.isArray(files) && files.length > 0) {
+      const photosToInsert = (files as RehashFileInput[]).map((file, idx) => ({
         rehash_id: note.id,
         user_id: user.id,
         image_url: file.url,
@@ -60,8 +68,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ noteId: note.id }, { status: 200 })
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Rehash creation error:', error)
-    return NextResponse.json({ error: error.message || 'Failed to create rehash' }, { status: 500 })
+    return NextResponse.json({ error: getErrorMessage(error, 'Failed to create rehash') }, { status: 500 })
   }
 }

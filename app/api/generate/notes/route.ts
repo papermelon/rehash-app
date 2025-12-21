@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callOpenAI, truncateText, extractJSONFromText } from '@/lib/openai-client'
+import { getErrorMessage } from '@/lib/error-utils'
 
 interface NotesResponse {
   notes: string
@@ -47,7 +48,7 @@ Output ONLY JSON in this exact format:
       result = await callOpenAI<NotesResponse>(messages, {
         response_format: { type: 'json_object' }
       })
-    } catch (jsonError) {
+    } catch {
       // Fallback to text mode and extract JSON
       const textResponse = await callOpenAI<string>(messages)
       const extracted = extractJSONFromText<NotesResponse>(textResponse)
@@ -61,10 +62,10 @@ Output ONLY JSON in this exact format:
     }
 
     return NextResponse.json(result)
-  } catch (error: any) {
+  } catch (error) {
     console.error('Notes generation error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to generate notes' },
+      { error: getErrorMessage(error, 'Failed to generate notes') },
       { status: 500 }
     )
   }

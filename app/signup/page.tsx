@@ -6,6 +6,7 @@ import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { getSupabaseBrowserClient } from "@/lib/supabase/client"
+import { getErrorMessage } from "@/lib/error-utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -60,8 +61,8 @@ function SignupForm() {
           router.refresh()
         }
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to create account")
+    } catch (err) {
+      setError(getErrorMessage(err, "Failed to create account"))
     } finally {
       setLoading(false)
     }

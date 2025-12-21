@@ -2,10 +2,10 @@
 
 import { createServerClient } from "@supabase/ssr"
 import { cookies, headers } from "next/headers"
-import type { NoteType } from "@/lib/types"
 // Using Interfaze AI for image and document analysis with OpenAI fallback
 import { extractTextFromImageWithInterfaze } from "@/lib/interfaze-client"
 import { extractTextFromImage as extractTextFromImageOpenAI } from "@/lib/openai-client"
+import { getErrorMessage } from "@/lib/error-utils"
 
 interface UploadedFileData {
   file: File
@@ -73,7 +73,7 @@ export async function processNote(input: ProcessNoteInput) {
       // Convert file to buffer
       const buffer = Buffer.from(await fileData.file.arrayBuffer())
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("note-uploads")
         .upload(fileName, buffer, {
           contentType: fileData.file.type,
@@ -118,7 +118,7 @@ export async function processNote(input: ProcessNoteInput) {
     const documentSections: string[] = []
     const documents = input.documents || []
     if (documents.length > 0) {
-      let mammothModule: any = null
+      let mammothModule: typeof import("mammoth") | null = null
       for (let i = 0; i < documents.length; i++) {
         const docData = documents[i]
         const buffer = Buffer.from(await docData.file.arrayBuffer())
@@ -260,8 +260,8 @@ export async function processNote(input: ProcessNoteInput) {
     }
 
     return { noteId: result.noteId }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Process note error:", error)
-    return { error: error.message || "Failed to process note" }
+    return { error: getErrorMessage(error, "Failed to process note") }
   }
 }

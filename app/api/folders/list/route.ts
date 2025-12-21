@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getErrorMessage } from '@/lib/error-utils'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = await getSupabaseServerClient()
 
@@ -33,12 +34,11 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ folders: folders || [] })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Fetch folders error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch folders' },
+      { error: getErrorMessage(error, 'Failed to fetch folders') },
       { status: 500 }
     )
   }
 }
-

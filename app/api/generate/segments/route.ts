@@ -3,6 +3,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { openai } from '@/lib/openai-client'
 import { getStyleTemplate } from '@/lib/script-styles'
 import type { ScriptStyle, ScriptSegment } from '@/lib/types'
+import { getErrorMessage } from '@/lib/error-utils'
 
 // Increase timeout for this route to handle long-running segment generation
 export const maxDuration = 300 // 5 minutes
@@ -158,12 +159,11 @@ Respond with ONLY the image prompt, nothing else. Be specific about composition,
       segments,
       count: segments.length 
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Segment generation error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to generate segments' },
+      { error: getErrorMessage(error, 'Failed to generate segments') },
       { status: 500 }
     )
   }
 }
-

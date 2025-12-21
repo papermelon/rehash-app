@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getErrorMessage } from '@/lib/error-utils'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = await getSupabaseServerClient()
 
@@ -39,14 +40,13 @@ export async function GET(request: NextRequest) {
         details: folderError.details,
       } : null,
     })
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
       { 
-        error: error.message,
-        stack: error.stack,
+        error: getErrorMessage(error, 'Failed to load folder debug info'),
+        stack: error instanceof Error ? error.stack : undefined,
       },
       { status: 500 }
     )
   }
 }
-

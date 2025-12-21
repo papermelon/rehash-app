@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { Gamepad2, RotateCcw, Trophy, Target, Heart } from "lucide-react"
 import type { GameCard } from "@/lib/types"
 
@@ -29,6 +27,28 @@ interface FallingAnswer {
   y: number
   speed: number
   id: number
+}
+
+const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
+  const words = text.split(' ')
+  let line = ''
+  const lines: string[] = []
+
+  for (const word of words) {
+    const testLine = line ? `${line} ${word}` : word
+    if (ctx.measureText(testLine).width > maxWidth && line) {
+      lines.push(line)
+      line = word
+    } else {
+      line = testLine
+    }
+  }
+
+  if (line) {
+    lines.push(line)
+  }
+
+  return lines
 }
 
 export function InvaderGame({ cards, title = "Space Invaders Study Game" }: InvaderGameProps) {
@@ -213,7 +233,7 @@ export function InvaderGame({ cards, title = "Space Invaders Study Game" }: Inva
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [mcqCards.length])
+  }, [mcqCards.length, shootLaser])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -292,29 +312,7 @@ export function InvaderGame({ cards, title = "Space Invaders Study Game" }: Inva
     setKeys({})
   }
 
-  const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
-    const words = text.split(' ')
-    let line = ''
-    const lines: string[] = []
-
-    for (const word of words) {
-      const testLine = line ? `${line} ${word}` : word
-      if (ctx.measureText(testLine).width > maxWidth && line) {
-        lines.push(line)
-        line = word
-      } else {
-        line = testLine
-      }
-    }
-
-    if (line) {
-      lines.push(line)
-    }
-
-    return lines
-  }
-
-  const drawGame = () => {
+  const drawGame = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -375,14 +373,14 @@ export function InvaderGame({ cards, title = "Space Invaders Study Game" }: Inva
       ctx.fillStyle = '#ffff00'
       ctx.fillRect(playerX - 1, 520, 2, 30)
     }
-  }
+  }, [fallingAnswers, keys, playerX])
 
   useEffect(() => {
     if (gameStarted) {
       const interval = setInterval(drawGame, 16)
       return () => clearInterval(interval)
     }
-  }, [gameStarted, playerX, fallingAnswers, keys])
+  }, [gameStarted, drawGame])
 
   if (mcqCards.length === 0) {
     return (
@@ -390,7 +388,7 @@ export function InvaderGame({ cards, title = "Space Invaders Study Game" }: Inva
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Gamepad2 className="h-5 w-5" />
-            Space Invaders Game
+            {title}
           </CardTitle>
           <CardDescription>
             No MCQ cards available for the game
@@ -497,7 +495,7 @@ export function InvaderGame({ cards, title = "Space Invaders Study Game" }: Inva
           <div>
             <CardTitle className="flex items-center gap-2">
               <Gamepad2 className="h-5 w-5" />
-              Space Invaders Study Game
+              {title}
             </CardTitle>
             <CardDescription>
               Shoot the correct answers falling from space!

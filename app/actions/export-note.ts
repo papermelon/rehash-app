@@ -1,6 +1,7 @@
 "use server"
 
 import { getSupabaseServerClient } from "@/lib/supabase/server"
+import { getErrorMessage } from "@/lib/error-utils"
 
 export type ExportFormat = "markdown" | "csv"
 
@@ -83,8 +84,8 @@ export async function exportNote(noteId: string, format: ExportFormat) {
     }
 
     return { error: "Invalid format" }
-  } catch (error: any) {
+  } catch (error) {
     console.error("[v0] Export error:", error)
-    return { error: error.message || "Failed to export note" }
+    return { error: getErrorMessage(error, "Failed to export note") }
   }
 }

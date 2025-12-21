@@ -2,6 +2,7 @@
 
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
+import { getErrorMessage } from "@/lib/error-utils"
 
 export async function renameNote(noteId: string, newTitle: string) {
   try {
@@ -60,9 +61,8 @@ export async function renameNote(noteId: string, newTitle: string) {
     }
 
     return { success: true }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Rename note error:", error)
-    return { error: error.message || "Failed to rename note" }
+    return { error: getErrorMessage(error, "Failed to rename note") }
   }
 }
-

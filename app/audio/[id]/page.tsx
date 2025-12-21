@@ -3,9 +3,8 @@ import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { AppNav } from "@/components/app-nav"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowLeft, Mic, Download, Volume2, FileText } from "lucide-react"
+import { ArrowLeft, Mic } from "lucide-react"
 import { AudioPageClient } from "./audio-page-client"
-import type { Note } from "@/lib/types"
 
 interface AudioPageProps {
   params: Promise<{ id: string }>
@@ -58,7 +57,7 @@ export default async function AudioPage({ params }: AudioPageProps) {
               <Mic className="h-16 w-16 mx-auto text-muted-foreground" />
               <h2 className="text-2xl font-bold">No Video Essay Content Available</h2>
               <p className="text-muted-foreground">
-                This note doesn't have any video essay script or audio generated yet.
+                This note doesn&apos;t have any video essay script or audio generated yet.
               </p>
               <Button asChild>
                 <Link href={`/review/${note.id}`}>
@@ -98,10 +97,8 @@ export default async function AudioPage({ params }: AudioPageProps) {
           note={note}
           hasAudio={hasAudio}
           hasScript={hasScript}
-          hasNotes={hasNotes}
         />
       </main>
     </div>
   )
 }
-

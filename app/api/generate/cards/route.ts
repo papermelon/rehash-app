@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callOpenAI, truncateText, extractJSONFromText } from '@/lib/openai-client'
 import type { GameCard } from '@/lib/types'
+import { getErrorMessage } from '@/lib/error-utils'
 
 interface CardsResponse {
   cards: GameCard[]
@@ -68,7 +69,7 @@ Output ONLY JSON in this exact format:
       result = await callOpenAI<CardsResponse>(messages, {
         response_format: { type: 'json_object' }
       })
-    } catch (jsonError) {
+    } catch {
       // Fallback to text mode and extract JSON
       const textResponse = await callOpenAI<string>(messages)
       const extracted = extractJSONFromText<CardsResponse>(textResponse)
@@ -153,8 +154,8 @@ Output ONLY JSON in this exact format:
     }
 
     return NextResponse.json({ cards: validCards })
-  } catch (error: any) {
-    console.error('Cards generation error:', error)
+  } catch (error) {
+    console.error('Cards generation error:', getErrorMessage(error, 'Unknown error'))
     
     // Return fallback cards if API fails completely
     const fallbackCards = [
