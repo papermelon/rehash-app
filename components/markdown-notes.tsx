@@ -20,10 +20,10 @@ export function MarkdownNotes({ notesMd, title = "Study Notes" }: MarkdownNotesP
   const htmlContent = notesMd ? 
     (() => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         // Type assertion needed: remark-html v15 types are incompatible with remark v15, but works at runtime
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return remark()
-          .use(remarkHtml as any)
+          .use(remarkHtml as any) // eslint-disable-line @typescript-eslint/no-explicit-any
           .processSync(notesMd)
           .toString()
       } catch (error) {
