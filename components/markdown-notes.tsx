@@ -8,9 +8,6 @@ import { toast } from "sonner"
 import { remark } from 'remark'
 import remarkHtml from 'remark-html'
 
-type RemarkUse = ReturnType<typeof remark>['use']
-type RemarkPlugin = Parameters<RemarkUse>[0]
-
 interface MarkdownNotesProps {
   notesMd: string
   title?: string
@@ -23,7 +20,11 @@ export function MarkdownNotes({ notesMd, title = "Study Notes" }: MarkdownNotesP
   const htmlContent = notesMd ? 
     (() => {
       try {
-        return remark().use(remarkHtml as unknown as RemarkPlugin).processSync(notesMd).toString()
+        // Type assertion needed due to remark-html v15 type incompatibility with remark v15
+        return remark()
+          .use(remarkHtml as any)
+          .processSync(notesMd)
+          .toString()
       } catch (error) {
         console.error('Markdown processing error:', error)
         return notesMd // Fallback to raw markdown
