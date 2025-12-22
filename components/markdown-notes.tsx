@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Copy, Download, Check, FileText } from "lucide-react"
 import { toast } from "sonner"
 import { remark } from 'remark'
+import type { Plugin } from 'unified'
 import remarkHtml from 'remark-html'
 
 interface MarkdownNotesProps {
@@ -20,7 +21,7 @@ export function MarkdownNotes({ notesMd, title = "Study Notes" }: MarkdownNotesP
   const htmlContent = notesMd ? 
     (() => {
       try {
-        return remark().use(remarkHtml).processSync(notesMd).toString()
+        return remark().use(remarkHtml as unknown as Plugin).processSync(notesMd).toString()
       } catch (error) {
         console.error('Markdown processing error:', error)
         return notesMd // Fallback to raw markdown
